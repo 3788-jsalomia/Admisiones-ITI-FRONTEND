@@ -1,0 +1,107 @@
+.formulario-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #ffffff, #ffffff);
+  min-height: 100vh;
+}
+
+/* Card con fondo suave para resaltar */
+.formulario-card {
+  max-width: 650px;
+  width: 100%;
+  border-radius: 1rem;
+  padding: 2rem;
+  background-color: #fdfdfd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  border: 1px solid #e2e8f0;
+}
+
+.formulario-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151; /* gris oscuro para mejor contraste */
+  display: block;
+}
+
+/* Inputs con borde sutil y enfoque en color principal */
+.form-group input,
+.form-group select {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background-color: #f9fafb;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #A51140;
+  box-shadow: 0 0 0 3px rgba(165, 17, 64, 0.2);
+  outline: none;
+}
+
+.carreras-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+}
+
+.botones-form {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+/* Botón principal con color institucional */
+.boton-principal {
+  background-color: #A51140;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.boton-principal:hover {
+  background-color: #8c0e36;
+}
+
+/* Botón secundario con el gris de la paleta */
+.boton-secundario {
+  background-color: #5E6A71;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.boton-secundario:hover {
+  background-color: #495257;
+}
+
+.formulario-card .p-card-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-family: "Helvetica", sans-serif; /* siguiendo tu guía tipográfica */
+  color: #A51140; /* Pantone 1945 */
+}

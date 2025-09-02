@@ -1,0 +1,178 @@
+/* ===========================
+   PALETA (aprox. HEX Pantone)
+   =========================== */
+:root{
+  --p431: #6C7073;        /* Pantone 431 C (gris pizarra) */
+  --p1945: #9E1B32;       /* Pantone 1945 C (rojo profundo) */
+  --p317: #A7E6D7;        /* Pantone 317 C (mint muy claro) */
+  --pwarm1: #D7D2CB;      /* P. Warm Gray 1 C (gris cálido) */
+
+  --bg: #f6f8fb;
+  --text: #1f2937;
+  --muted: #6b7280;
+}
+
+/* ===========================
+   TIPOGRAFÍAS
+   =========================== */
+/* Si cuentas con los archivos de Impara, declara @font-face aquí.
+@font-face {
+  font-family: "Impara";
+  src: url("/fonts/Impara-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Impara";
+  src: url("/fonts/Impara-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* Externas (preferencia): Impara Light/Medium si existe; fallback a Helvetica */
+body{
+  font-family: "Impara", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Para piezas internas/digitales puedes forzar Helvetica en secciones específicas */
+.helvetica{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ===========================
+   LAYOUT
+   =========================== */
+.layout-root{
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: linear-gradient(180deg, var(--p431), #4f565b);
+  color: #fff;
+  padding: 1.25rem 1rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Marca (logo centrado) */
+.sidebar__brand{
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 1rem;
+}
+
+.sidebar__logo{
+  width: 120px;
+  height: 120px;
+  object-fit: contain;     /* mantiene proporciones */
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+
+.sidebar__title{
+  font-weight: 600;         /* Impara Medium si existe; sino Helvetica Boldish */
+  letter-spacing: 0.4px;
+}
+
+/* Navegación */
+.sidebar__nav{
+  display: grid;
+  gap: 0.25rem;
+}
+
+.sidebar__link{
+  display: block;
+  padding: 0.625rem 0.75rem;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform .15s ease, background-color .15s ease, color .15s ease;
+}
+
+.sidebar__link:hover{
+  background: rgba(255,255,255,0.08);
+  transform: translateX(2px);
+}
+
+.sidebar__link.is-active{
+  background: linear-gradient(90deg, var(--p1945), #b21e3a);
+  color: #fff;
+}
+
+/* Footer */
+.sidebar__footer{
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+}
+
+/* ===== Contenido ===== */
+.content{
+  padding: 2rem;
+  background:
+    radial-gradient(1200px 600px at -200px -100px, rgba(167,230,215,0.25), transparent 60%),
+    radial-gradient(900px 500px at 100% 0, rgba(215,210,203,0.25), transparent 60%),
+    var(--bg);
+}
+
+/* Puedes usar la paleta en elementos UI */
+.card-themed{
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Botones sugeridos */
+.btn-primary{
+  background: linear-gradient(90deg, var(--p1945), #b21e3a);
+  border: none;
+  color: #fff;
+}
+.btn-primary:hover{ filter: brightness(1.05); }
+
+.btn-secondary{
+  background: var(--p431);
+  border: none;
+  color: #fff;
+}
+.btn-secondary:hover{ filter: brightness(1.08); }
+
+/* Etiquetas y acentos */
+.badge-mint{
+  background: var(--p317);
+  color: #0d4239;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px){
+  .layout-root{ grid-template-columns: 84px 1fr; }
+  .sidebar__title{ display: none; }
+  .sidebar__logo{ width: 56px; height: 56px; }
+  .sidebar__link{ text-align: center; }
+}
+
+@media (max-width: 640px){
+  .layout-root{ grid-template-columns: 72px 1fr; }
+  .content{ padding: 1rem; }
+}
