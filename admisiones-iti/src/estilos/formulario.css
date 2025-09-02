@@ -105,3 +105,52 @@
   font-family: "Helvetica", sans-serif; /* siguiendo tu guía tipográfica */
   color: #A51140; /* Pantone 1945 */
 }
+
+/* Mobile-first: ocupa todo el ancho */
+.formulario-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffffff, #ffffff);
+  min-height: 100vh;
+}
+
+.formulario-card {
+  width: 100%;
+  max-width: 650px;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background-color: #fdfdfd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  border: 1px solid #e2e8f0;
+}
+
+/* Inputs más cómodos en pantallas pequeñas */
+.form-group input,
+.form-group select {
+  font-size: 1rem;
+}
+
+/* Carreras en una columna en móviles */
+.carreras-checklist {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.botones-form {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.botones-form button {
+  width: 100%;
+}
+
+/* ====== BREAKPOINTS ====== */
+@media (min-width: 640px) {
+  .formulario-container { padding: 2rem; }
+  .carreras-checklist { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .botones-form { flex-direction: row; }
+  .botones-form button { width: auto; }
+}
