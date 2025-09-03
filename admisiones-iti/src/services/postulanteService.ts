@@ -2,6 +2,9 @@ import type { PostulanteDto } from "../types/Postulante";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
+/**
+ * Crea un postulante y devuelve la respuesta del backend como JSON.
+ */
 export const crearPostulante = async (postulante: PostulanteDto) => {
   const response = await fetch(`${API_URL}/postulantes`, {
     method: "POST",
@@ -12,12 +15,22 @@ export const crearPostulante = async (postulante: PostulanteDto) => {
   });
 
   if (!response.ok) {
-    throw new Error("Error al crear postulante");
+    const text = await response.text();
+    throw new Error(`Error al crear postulante: ${response.status} - ${text}`);
   }
-  return response.json(); // ahora devuelve el postulante con ID
+
+  // Intentar parsear JSON, si falla devolver objeto vacío
+  try {
+    return await response.json();
+  } catch {
+    return {}; 
+  }
 };
 
-export const asignarCarreras = async (postulanteId: number, carreraIds: number[]) => {
+/**
+ * Asigna una lista de carreras a un postulante.
+ */
+export const asignarCarreras = async (postulanteId: number, carreraIds: number[]): Promise<void> => {
   const requests = carreraIds.map((carreraId) =>
     fetch(`${API_URL}/carreras-postulantes`, {
       method: "POST",
@@ -30,10 +43,9 @@ export const asignarCarreras = async (postulanteId: number, carreraIds: number[]
 
   const responses = await Promise.all(requests);
 
-  if (responses.some((r) => !r.ok)) {
-    throw new Error("Error al asignar carreras");
+  const failed = responses.filter((r) => !r.ok);
+  if (failed.length > 0) {
+    const errors = await Promise.all(failed.map((r) => r.text()));
+    throw new Error(`Error al asignar carreras: ${errors.join(", ")}`);
   }
-
-  return responses;
 };
-
