@@ -228,23 +228,24 @@ export default function FormularioPostulante() {
                                     <div key={carrera.id} className="checkbox-item">
                                         <Checkbox
                                             inputId={`carrera_${carrera.id}`}
-                                            value={carrera.nombre}
+                                            value={carrera.id.toString()} // ⚡ aquí guardamos el ID
                                             onChange={(e) => {
                                                 let seleccionadas = [...carrerasSeleccionadas];
                                                 if (e.checked) {
                                                     seleccionadas.push(e.value);
                                                 } else {
-                                                    seleccionadas = seleccionadas.filter(c => c !== e.value);
+                                                    seleccionadas = seleccionadas.filter(id => id !== e.value);
                                                 }
                                                 setCarrerasSeleccionadas(seleccionadas);
                                             }}
-                                            checked={carrerasSeleccionadas.includes(carrera.nombre)}
+                                            checked={carrerasSeleccionadas.includes(carrera.id.toString())}
                                         />
                                         <label htmlFor={`carrera_${carrera.id}`} className="checkbox-label">
                                             {carrera.nombre}
                                         </label>
                                     </div>
                                 ))}
+
                             </div>
                         </div>
                     )}
