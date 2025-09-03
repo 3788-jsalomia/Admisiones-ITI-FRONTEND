@@ -1,31 +1,39 @@
 import type { PostulanteDto } from "../types/Postulante";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
-//  Crear postulante
 export const crearPostulante = async (postulante: PostulanteDto) => {
   const response = await fetch(`${API_URL}/postulantes`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(postulante),
   });
 
   if (!response.ok) {
     throw new Error("Error al crear postulante");
   }
-  return response;
+  return response.json(); // ahora devuelve el postulante con ID
 };
 
-//  Asignar carreras al postulante
-export const asignarCarreras = async (postulanteId: number, carreras: string[]) => {
-  const response = await fetch(`${API_URL}/postulante_carrera/${postulanteId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ carreras }),
-  });
+export const asignarCarreras = async (postulanteId: number, carreraIds: number[]) => {
+  const requests = carreraIds.map((carreraId) =>
+    fetch(`${API_URL}/carreras-postulantes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ postulanteId, carreraId }),
+    })
+  );
 
-  if (!response.ok) {
+  const responses = await Promise.all(requests);
+
+  if (responses.some((r) => !r.ok)) {
     throw new Error("Error al asignar carreras");
   }
-  return response;
+
+  return responses;
 };
+
