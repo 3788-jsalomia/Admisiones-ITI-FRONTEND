@@ -1,12 +1,12 @@
-// services/postulanteService.ts
 import type { PostulanteDto } from "../types/Postulante";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
+//  Crear postulante
 export const crearPostulante = async (postulante: PostulanteDto) => {
-  const response = await fetch("http://localhost:8080/postulantes", {
+  const response = await fetch(`${API_URL}/postulantes`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(postulante),
   });
 
@@ -16,12 +16,11 @@ export const crearPostulante = async (postulante: PostulanteDto) => {
   return response;
 };
 
+//  Asignar carreras al postulante
 export const asignarCarreras = async (postulanteId: number, carreras: string[]) => {
-  const response = await fetch(`http://localhost:8080/postulante_carrera/${postulanteId}`, {
+  const response = await fetch(`${API_URL}/postulante_carrera/${postulanteId}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ carreras }),
   });
 
