@@ -94,10 +94,20 @@ export default function FormularioPostulante() {
         try {
             // 1️⃣ Crear postulante
             const resp = await crearPostulante({
-                nombre,
+                nombres: nombre,              // 👈 corregido
+                apellidos: "Pérez",           // deberías pedirlo en el form
+                telefono: celular,            // 👈 corregido
                 cedula,
                 correo,
-                celular,
+                direccion: "N/A",             // puedes poner dummy si aún no lo pides
+                carrerasId: carrerasFiltradas
+                    .filter(c => carrerasSeleccionadas.includes(c.nombre))
+                    .map(c => c.id), // 👈 number[]
+                estado: "PENDIENTE",
+                fechaUltimoContacto: new Date().toISOString().split("T")[0],
+                intentosContacto: 0,
+                fechaNacimiento: "2000-01-01", // agrega campo en el form si lo necesitas
+                periodoAcademicoId: 1          // idem
             });
 
             const nuevoPostulante = await resp.json(); // backend debe devolver { id: ... }
