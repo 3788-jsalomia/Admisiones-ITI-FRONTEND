@@ -164,7 +164,8 @@ export default function FormularioPostulante() {
             console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
 
-            console.log("Respuesta del servidor:", resp);
+            console.log("Status:", resp.status);  // imprime 500 si falla
+            console.log("Text:", await resp.text()); // imprime el mensaje de error completo
 
 
             if (resp.ok) {
