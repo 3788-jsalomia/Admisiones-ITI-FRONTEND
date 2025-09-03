@@ -147,35 +147,24 @@ export default function FormularioPostulante() {
         try {
             const resp = await crearPostulante(payload);
 
-            console.log("Status:", resp.status);
+            console.log("Respuesta del backend:", resp);
 
-            // Siempre leer como texto, nunca asumir JSON
-            let textResponse = "";
-            try {
-                textResponse = await resp.text();
-            } catch (textErr) {
-                console.warn("No se pudo leer la respuesta como texto:", textErr);
-            }
-            console.log("Respuesta del backend:", textResponse);
 
-            if (resp.ok) {
-                toast.current?.show({
-                    severity: "success",
-                    summary: "Postulante registrado",
-                    detail: `${nombres} ${apellidos}`,
-                    life: 4000,
-                });
+            toast.current?.show({
+                severity: "success",
+                summary: "Postulante registrado",
+                detail: `${nombres} ${apellidos}`,
+                life: 4000,
+            });
 
-                // Reset del formulario
-                setNombre("");
-                setCedula("");
-                setCorreo("");
-                setCelular("");
-                setModalidadSeleccionada(null);
-                setCarrerasSeleccionadas([]);
-            } else {
-                throw new Error(`Error en el servidor: ${resp.status} - ${textResponse}`);
-            }
+            // Reset del formulario
+            setNombre("");
+            setCedula("");
+            setCorreo("");
+            setCelular("");
+            setModalidadSeleccionada(null);
+            setCarrerasSeleccionadas([]);
+
         } catch (err) {
             console.error("Error en crearPostulante:", err);
             toast.current?.show({
