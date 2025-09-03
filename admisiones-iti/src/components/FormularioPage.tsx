@@ -108,7 +108,7 @@ export default function FormularioPostulante() {
                 postulanteId,
                 carrerasFiltradas
                     .filter(c => carrerasSeleccionadas.includes(c.nombre))
-                    .map(c => c.id.toString())
+                    .map(c => c.id)
             );
 
             // 3️⃣ Notificación
