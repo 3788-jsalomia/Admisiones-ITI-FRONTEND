@@ -242,7 +242,7 @@ export default function FormularioPostulante() {
                                             checked={(carrerasSeleccionadas[modalidadSeleccionada] || []).includes(carrera.id)}
                                             onChange={() => toggleCarrera(modalidadSeleccionada, carrera.id)}
                                         />
-                                        <label htmlFor={`carrera-${carrera.id}`}>{carrera.nombre}</label>
+                                        <label htmlFor={`carrera-${carrera.id}`} className="checkbox-label">{carrera.nombre}</label>
                                     </div>
                                 ))}
                             </div>
