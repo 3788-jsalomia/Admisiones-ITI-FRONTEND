@@ -144,7 +144,7 @@ export default function FormularioPostulante() {
                 usuario_registro: "FrontendUser",
                 periodoAcademicoId: 1
             };
-
+            console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
             const nuevoPostulante = await resp.json();
             const postulanteId = nuevoPostulante.id;
