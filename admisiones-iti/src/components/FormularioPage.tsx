@@ -135,9 +135,7 @@ export default function FormularioPostulante() {
                 cedula,
                 correo,
                 direccion: "N/A",
-                carrerasId: carrerasFiltradas
-                    .filter(c => carrerasSeleccionadas.includes(c.nombre))
-                    .map(c => c.id),
+                carrerasId: carrerasSeleccionadas.map(id => Number(id)),
                 estado: "PENDIENTE" as const,
                 intentosContacto: 0,
                 fechaNacimiento: "2000-01-01",
