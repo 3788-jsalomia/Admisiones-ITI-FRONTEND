@@ -128,6 +128,25 @@ export default function FormularioPostulante() {
         const { nombres, apellidos } = separarNombresApellidos(nombre);
 
         try {
+
+            console.log("Payload a enviar:", {
+                nombres,
+                apellidos,
+                telefono: celular,
+                cedula,
+                correo,
+                direccion: "N/A",
+                carrerasId: carrerasSeleccionadas.map(id => Number(id)),
+                estado: "PENDIENTE",
+                intentosContacto: 0,
+                fechaNacimiento: "2000-01-01",
+                usuario_registro: "FrontendUser",
+                periodoAcademicoId: 1
+            });
+
+
+
+
             const payload = {
                 nombres,
                 apellidos,
