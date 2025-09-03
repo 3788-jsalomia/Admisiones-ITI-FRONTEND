@@ -164,6 +164,8 @@ export default function FormularioPostulante() {
             console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
 
+            console.log("Respuesta del servidor:", resp);
+
 
             if (resp.ok) {
                 toast.current?.show({
