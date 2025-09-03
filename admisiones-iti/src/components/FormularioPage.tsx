@@ -210,7 +210,7 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="telefono">Número de Celular</label>
-                        <InputText id="telefono" type="number" value={celular} onChange={(e) => setCelular(e.target.value)} className="w-full" placeholder="Ej: 0999999999" />
+                        <InputText id="telefono" value={celular} onChange={(e) => setCelular(e.target.value)} className="w-full" placeholder="Ej: 0999999999" />
                     </div>
 
                     <div className="form-group form-group-dropdown">
