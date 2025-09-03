@@ -106,12 +106,24 @@ export default function FormularioPostulante() {
             return;
         }
 
+        const { nombres, apellidos } = separarNombresApellidos(nombre);
+        
+        if (nombre.trim().split(" ").length < 2) {
+            toast.current?.show({
+                severity: "warn",
+                summary: "Nombre incompleto",
+                detail: "Ingrese al menos un nombre y un apellido.",
+                life: 3000
+            });
+            return;
+        }
+
 
         try {
             // 1️⃣ Crear postulante
             const resp = await crearPostulante({
-                nombres: nombre,              // 👈 corregido
-                apellidos: "Pérez",           // deberías pedirlo en el form
+                nombres,              // 👈 corregido
+                apellidos,           // deberías pedirlo en el form
                 telefono: celular,            // 👈 corregido
                 cedula,
                 correo,
@@ -164,6 +176,35 @@ export default function FormularioPostulante() {
     };
 
 
+
+
+    //Separacion de apellidos y nombres
+    const separarNombresApellidos = (nombreCompleto: string) => {
+        const partes = nombreCompleto.trim().split(" ");
+
+        let nombres = "";
+        let apellidos = "";
+
+        if (partes.length === 4) {
+            // formato esperado: [Nombre1, Nombre2, Apellido1, Apellido2]
+            nombres = `${partes[0]} ${partes[1]}`;
+            apellidos = `${partes[2]} ${partes[3]}`;
+        } else if (partes.length === 3) {
+            // [Nombre1, Nombre2, Apellido1] -> asumimos primer apellido solo
+            nombres = `${partes[0]} ${partes[1]}`;
+            apellidos = partes[2];
+        } else if (partes.length === 2) {
+            // [Nombre, Apellido]
+            nombres = partes[0];
+            apellidos = partes[1];
+        } else {
+            // cualquier otro caso, todo va a nombres
+            nombres = nombreCompleto;
+        }
+
+        return { nombres, apellidos };
+    };
+
     return (
         <div className="formulario-container">
             <Toast ref={toast} />
@@ -171,23 +212,23 @@ export default function FormularioPostulante() {
                 <form onSubmit={handleSubmit} className="formulario-grid">
 
                     <div className="form-group">
-                        <label htmlFor="nombre">Nombre Completo</label>
-                        <InputText id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-full" />
+                        <label htmlFor="nombre">Nombres Completos</label>
+                        <InputText id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-full" placeholder="Dos nombres / Dos apellidos" />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="cedula">Cédula</label>
-                        <InputText id="cedula" value={cedula} onChange={(e) => setCedula(e.target.value)} className="w-full" />
+                        <InputText id="cedula" value={cedula} onChange={(e) => setCedula(e.target.value)} className="w-full" placeholder="Ej: 1799999999" />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="correo">Correo Electrónico</label>
-                        <InputText id="correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} className="w-full" />
+                        <InputText id="correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} className="w-full" placeholder="Ej: correo@gmai.com" />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="telefono">Número de Celular</label>
-                        <InputText id="telefono" type="number" value={celular} onChange={(e) => setCelular(e.target.value)} className="w-full" />
+                        <InputText id="telefono" type="number" value={celular} onChange={(e) => setCelular(e.target.value)} className="w-full" placeholder="Ej: 0999999999" />
                     </div>
 
                     <div className="form-group form-group-dropdown">
