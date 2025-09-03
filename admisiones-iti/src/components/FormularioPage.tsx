@@ -163,8 +163,13 @@ export default function FormularioPostulante() {
             };
             console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
+
+            
             const nuevoPostulante = await resp.json();
+            
             const postulanteId = nuevoPostulante.id;
+            
+            console.log("Postulante creado con ID:", postulanteId);
 
             await asignarCarreras(
                 postulanteId,
