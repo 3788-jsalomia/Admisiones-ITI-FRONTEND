@@ -19,7 +19,7 @@ export default function FormularioPostulante() {
     const [modalidadSeleccionada, setModalidadSeleccionada] = useState<string | null>(null);
     const [carreras, setCarreras] = useState<Carrera[]>([]);
     const [carrerasFiltradas, setCarrerasFiltradas] = useState<Carrera[]>([]);
-    const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState<string[]>([]);
+    const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState<{ [modalidadId: string]: number[] }>({});
 
     const toast = useRef<Toast>(null);
 
@@ -42,11 +42,9 @@ export default function FormularioPostulante() {
     useEffect(() => {
         if (!modalidadSeleccionada) {
             setCarrerasFiltradas([]);
-            setCarrerasSeleccionadas([]);
         } else {
             const filtradas = carreras.filter(c => c.modalidad === modalidadSeleccionada);
             setCarrerasFiltradas(filtradas);
-            setCarrerasSeleccionadas([]);
         }
     }, [modalidadSeleccionada, carreras]);
 
@@ -92,10 +90,22 @@ export default function FormularioPostulante() {
         return { nombres, apellidos };
     };
 
+    const toggleCarrera = (modalidadId: string, carreraId: number) => {
+        setCarrerasSeleccionadas((prev) => {
+            const actuales = prev[modalidadId] || [];
+            const nuevas = actuales.includes(carreraId)
+                ? actuales.filter((id) => id !== carreraId)
+                : [...actuales, carreraId];
+            return { ...prev, [modalidadId]: nuevas };
+        });
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!nombre || !cedula || !correo || !celular || !modalidadSeleccionada || carrerasSeleccionadas.length === 0) {
+        const totalCarreras = Object.values(carrerasSeleccionadas).flat();
+
+        if (!nombre || !cedula || !correo || !celular || totalCarreras.length === 0) {
             toast.current?.show({
                 severity: "warn",
                 summary: "Campos incompletos",
@@ -134,7 +144,7 @@ export default function FormularioPostulante() {
             cedula,
             correo,
             direccion: "N/A",
-            carrerasId: carrerasSeleccionadas.map(Number),
+            carrerasId: totalCarreras,
             estado: "PENDIENTE" as const,
             intentosContacto: 0,
             fechaNacimiento: "2000-01-01",
@@ -146,9 +156,7 @@ export default function FormularioPostulante() {
 
         try {
             const resp = await crearPostulante(payload);
-
             console.log("Respuesta del backend:", resp);
-
 
             toast.current?.show({
                 severity: "success",
@@ -157,14 +165,12 @@ export default function FormularioPostulante() {
                 life: 4000,
             });
 
-            // Reset del formulario
             setNombre("");
             setCedula("");
             setCorreo("");
             setCelular("");
             setModalidadSeleccionada(null);
-            setCarrerasSeleccionadas([]);
-
+            setCarrerasSeleccionadas({});
         } catch (err) {
             console.error("Error en crearPostulante:", err);
             toast.current?.show({
@@ -176,21 +182,18 @@ export default function FormularioPostulante() {
         }
     };
 
-
-
     return (
         <div className="formulario-container">
             <Toast ref={toast} />
             <Card title="Formulario de Postulación" className="formulario-card shadow-4">
                 <form onSubmit={handleSubmit} className="formulario-grid">
-
                     <div className="form-group">
                         <label htmlFor="nombre">Nombres Completos</label>
                         <InputText
                             id="nombre"
                             value={nombre}
                             onChange={(e) => {
-                                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Solo letras, espacios y tildes
+                                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
                                 if (regex.test(e.target.value)) {
                                     setNombre(e.target.value);
                                 }
@@ -199,7 +202,6 @@ export default function FormularioPostulante() {
                             placeholder="Dos nombres / Dos apellidos"
                         />
                     </div>
-
 
                     <div className="form-group">
                         <label htmlFor="cedula">Cédula</label>
@@ -234,30 +236,31 @@ export default function FormularioPostulante() {
                             <label className="form-label">Carreras Disponibles</label>
                             <div className="carreras-checklist">
                                 {carrerasFiltradas.map((carrera) => (
-                                    <div key={carrera.id} className="checkbox-item">
+                                    <div key={carrera.id} className="flex items-center gap-2">
                                         <Checkbox
-                                            inputId={`carrera_${carrera.id}`}
-                                            value={carrera.id.toString()} // ⚡ aquí guardamos el ID
-                                            onChange={(e) => {
-                                                let seleccionadas = [...carrerasSeleccionadas];
-                                                if (e.checked) {
-                                                    seleccionadas.push(e.value);
-                                                } else {
-                                                    seleccionadas = seleccionadas.filter(id => id !== e.value);
-                                                }
-                                                setCarrerasSeleccionadas(seleccionadas);
-                                            }}
-                                            checked={carrerasSeleccionadas.includes(carrera.id.toString())}
+                                            inputId={`carrera-${carrera.id}`}
+                                            checked={(carrerasSeleccionadas[modalidadSeleccionada] || []).includes(carrera.id)}
+                                            onChange={() => toggleCarrera(modalidadSeleccionada, carrera.id)}
                                         />
-                                        <label htmlFor={`carrera_${carrera.id}`} className="checkbox-label">
-                                            {carrera.nombre}
-                                        </label>
+                                        <label htmlFor={`carrera-${carrera.id}`}>{carrera.nombre}</label>
                                     </div>
                                 ))}
-
                             </div>
                         </div>
                     )}
+
+                    <div>
+                        <h4>Carreras seleccionadas:</h4>
+                        {Object.entries(carrerasSeleccionadas).map(([modalidad, ids]) => (
+                            <div key={modalidad}>
+                                <strong>{modalidad}:</strong>{" "}
+                                {ids.map((id) => {
+                                    const carrera = carreras.find((c) => c.id === id);
+                                    return carrera ? carrera.nombre : id;
+                                }).join(", ")}
+                            </div>
+                        ))}
+                    </div>
 
                     <div className="botones-form">
                         <Button
@@ -277,11 +280,10 @@ export default function FormularioPostulante() {
                                 setCorreo("");
                                 setCelular("");
                                 setModalidadSeleccionada(null);
-                                setCarrerasSeleccionadas([]);
+                                setCarrerasSeleccionadas({});
                             }}
                         />
                     </div>
-
                 </form>
             </Card>
         </div>
