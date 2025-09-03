@@ -186,8 +186,20 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="nombre">Nombres Completos</label>
-                        <InputText id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-full" placeholder="Dos nombres / Dos apellidos" />
+                        <InputText
+                            id="nombre"
+                            value={nombre}
+                            onChange={(e) => {
+                                const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Solo letras, espacios y tildes
+                                if (regex.test(e.target.value)) {
+                                    setNombre(e.target.value);
+                                }
+                            }}
+                            className="w-full"
+                            placeholder="Dos nombres / Dos apellidos"
+                        />
                     </div>
+
 
                     <div className="form-group">
                         <label htmlFor="cedula">Cédula</label>

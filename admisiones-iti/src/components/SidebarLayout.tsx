@@ -18,7 +18,7 @@ export default function SidebarLayout({ logoSrc, appName = "Admisiones", childre
 
         <nav className="sidebar__nav">
           {/* Links de ejemplo: reemplaza por los tuyos */}
-          <p>Por favor llena todos los campos disponibles y selecciona al menos una carrera.</p>
+          
         </nav>
 
         <div className="sidebar__footer">
