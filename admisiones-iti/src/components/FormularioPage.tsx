@@ -236,7 +236,7 @@ export default function FormularioPostulante() {
                             <label className="form-label">Carreras Disponibles</label>
                             <div className="carreras-checklist">
                                 {carrerasFiltradas.map((carrera) => (
-                                    <div key={carrera.id} className="flex items-center gap-2">
+                                    <div key={carrera.id} className="checkbox-item">
                                         <Checkbox
                                             inputId={`carrera-${carrera.id}`}
                                             checked={(carrerasSeleccionadas[modalidadSeleccionada] || []).includes(carrera.id)}
