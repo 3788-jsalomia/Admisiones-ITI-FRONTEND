@@ -154,7 +154,7 @@ export default function FormularioPostulante() {
                 cedula,
                 correo,
                 direccion: "N/A",
-                carrerasId: carrerasSeleccionadas.map(id => Number(id)),
+                carrerasId: carrerasSeleccionadas.map(Number),
                 estado: "PENDIENTE" as const,
                 intentosContacto: 0,
                 fechaNacimiento: "2000-01-01",
