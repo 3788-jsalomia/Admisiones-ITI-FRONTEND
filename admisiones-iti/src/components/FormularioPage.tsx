@@ -165,24 +165,23 @@ export default function FormularioPostulante() {
             const resp = await crearPostulante(payload);
 
 
-            await resp.json();
+            if (resp.ok) {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Postulante registrado",
+                    detail: `${nombres} ${apellidos}`,
+                    life: 4000,
+                });
 
-
-
-            toast.current?.show({
-                severity: "success",
-                summary: "Postulante registrado",
-                detail: `${nombres} ${apellidos}`,
-                life: 4000,
-            });
-
-            setNombre("");
-            setCedula("");
-            setCorreo("");
-            setCelular("");
-            setModalidadSeleccionada(null);
-            setCarrerasSeleccionadas([]);
-
+                setNombre("");
+                setCedula("");
+                setCorreo("");
+                setCelular("");
+                setModalidadSeleccionada(null);
+                setCarrerasSeleccionadas([]);
+            } else {
+                throw new Error("Error en la respuesta del servidor");
+            }
         } catch (err) {
             console.error(err);
             toast.current?.show({
