@@ -91,6 +91,22 @@ export default function FormularioPostulante() {
             return;
         }
 
+        const validarTelefono = (telefono: string): boolean => {
+            // Debe comenzar con 09 y tener 10 dígitos
+            const regex = /^09\d{8}$/;
+            return regex.test(telefono);
+        };
+        if (!validarTelefono(celular)) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Teléfono inválido",
+                detail: "Ingrese un número de celular válido en Ecuador.",
+                life: 3000,
+            });
+            return;
+        }
+
+
         try {
             // 1️⃣ Crear postulante
             const resp = await crearPostulante({
