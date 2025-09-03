@@ -7,7 +7,7 @@ import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
 
 import { getCarreras } from "../services/carrerasService";
-import { crearPostulante, asignarCarreras } from "../services/postulanteService";
+import { crearPostulante } from "../services/postulanteService";
 import type { Carrera } from "../types/Carrera";
 import "../estilos/formulario.css";
 
@@ -164,19 +164,10 @@ export default function FormularioPostulante() {
             console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
 
-            
-            const nuevoPostulante = await resp.json();
-            
-            const postulanteId = nuevoPostulante.id;
-            
-            console.log("Postulante creado con ID:", postulanteId);
 
-            await asignarCarreras(
-                postulanteId,
-                carrerasFiltradas
-                    .filter(c => carrerasSeleccionadas.includes(c.nombre))
-                    .map(c => c.id)
-            );
+            await resp.json();
+
+
 
             toast.current?.show({
                 severity: "success",
