@@ -107,7 +107,7 @@ export default function FormularioPostulante() {
         }
 
         const { nombres, apellidos } = separarNombresApellidos(nombre);
-        
+
         if (nombre.trim().split(" ").length < 2) {
             toast.current?.show({
                 severity: "warn",
@@ -137,6 +137,8 @@ export default function FormularioPostulante() {
                 fechaNacimiento: "2000-01-01", // agrega campo en el form si lo necesitas
                 periodoAcademicoId: 1          // idem
             });
+
+            console.log("Respuesta crearPostulante:", resp);
 
             const nuevoPostulante = await resp.json(); // backend debe devolver { id: ... }
             const postulanteId = nuevoPostulante.id;
