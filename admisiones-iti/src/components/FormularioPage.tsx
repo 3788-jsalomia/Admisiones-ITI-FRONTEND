@@ -127,46 +127,36 @@ export default function FormularioPostulante() {
 
         const { nombres, apellidos } = separarNombresApellidos(nombre);
 
+        const payload = {
+            nombres,
+            apellidos,
+            telefono: celular,
+            cedula,
+            correo,
+            direccion: "N/A",
+            carrerasId: carrerasSeleccionadas.map(Number),
+            estado: "PENDIENTE" as const,
+            intentosContacto: 0,
+            fechaNacimiento: "2000-01-01",
+            usuario_registro: "FrontendUser",
+            periodoAcademicoId: 1
+        };
+
+        // 🔹 Siempre logueamos el payload antes del fetch
+        console.log("Payload a enviar:", payload);
+
         try {
-
-            console.log("Payload a enviar:", {
-                nombres,
-                apellidos,
-                telefono: celular,
-                cedula,
-                correo,
-                direccion: "N/A",
-                carrerasId: carrerasSeleccionadas.map(id => Number(id)),
-                estado: "PENDIENTE",
-                intentosContacto: 0,
-                fechaNacimiento: "2000-01-01",
-                usuario_registro: "FrontendUser",
-                periodoAcademicoId: 1
-            });
-
-
-
-
-            const payload = {
-                nombres,
-                apellidos,
-                telefono: celular,
-                cedula,
-                correo,
-                direccion: "N/A",
-                carrerasId: carrerasSeleccionadas.map(Number),
-                estado: "PENDIENTE" as const,
-                intentosContacto: 0,
-                fechaNacimiento: "2000-01-01",
-                usuario_registro: "FrontendUser",
-                periodoAcademicoId: 1
-            };
-            console.log("Payload a enviar:", payload);
             const resp = await crearPostulante(payload);
 
-            console.log("Status:", resp.status);  // imprime 500 si falla
-            console.log("Text:", await resp.text()); // imprime el mensaje de error completo
+            console.log("Status:", resp.status);
 
+            let textResponse = "";
+            try {
+                textResponse = await resp.text();
+            } catch (jsonErr) {
+                console.warn("No se pudo parsear la respuesta como texto/json:", jsonErr);
+            }
+            console.log("Text response:", textResponse);
 
             if (resp.ok) {
                 toast.current?.show({
@@ -186,7 +176,7 @@ export default function FormularioPostulante() {
                 throw new Error("Error en la respuesta del servidor");
             }
         } catch (err) {
-            console.error(err);
+            console.error("Error en crearPostulante:", err);
             toast.current?.show({
                 severity: "error",
                 summary: "Error",
@@ -195,6 +185,7 @@ export default function FormularioPostulante() {
             });
         }
     };
+
 
     return (
         <div className="formulario-container">
