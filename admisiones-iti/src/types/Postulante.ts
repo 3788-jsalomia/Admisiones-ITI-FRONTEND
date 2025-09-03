@@ -1,6 +1,14 @@
 export interface PostulanteDto {
-    nombre: string;
+    nombres: string;
+    apellidos: string;
     cedula: string;
     correo: string;
-    celular: string;
+    telefono: string;
+    direccion: string;
+    carrerasId: number[]; // IDs de las carreras seleccionadas
+    estado?: 'PENDIENTE' | 'ACEPTADO' | 'RECHAZADO'; // Opcional, por defecto 'PENDIENTE'
+    fechaUltimoContacto?: string; // Opcional, fecha en formato ISO
+    intentosContacto?: number; // Opcional, por defecto 0
+    fechaNacimiento?: string; // Opcional, fecha en formato ISO
+    periodoAcademicoId?: number; // Opcional, ID del periodo académico
 }
