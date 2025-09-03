@@ -68,6 +68,30 @@ export default function FormularioPostulante() {
         return digitoVerificador === digitos[9];
     };
 
+    const validarTelefono = (telefono: string): boolean => {
+        const regex = /^09\d{8}$/;
+        return regex.test(telefono);
+    };
+
+    const separarNombresApellidos = (nombreCompleto: string) => {
+        const partes = nombreCompleto.trim().split(" ");
+        let nombres = "";
+        let apellidos = "";
+        if (partes.length >= 4) {
+            nombres = `${partes[0]} ${partes[1]}`;
+            apellidos = `${partes[2]} ${partes[3]}`;
+        } else if (partes.length === 3) {
+            nombres = `${partes[0]} ${partes[1]}`;
+            apellidos = partes[2];
+        } else if (partes.length === 2) {
+            nombres = partes[0];
+            apellidos = partes[1];
+        } else {
+            nombres = nombreCompleto;
+        }
+        return { nombres, apellidos };
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -91,11 +115,6 @@ export default function FormularioPostulante() {
             return;
         }
 
-        const validarTelefono = (telefono: string): boolean => {
-            // Debe comenzar con 09 y tener 10 dígitos
-            const regex = /^09\d{8}$/;
-            return regex.test(telefono);
-        };
         if (!validarTelefono(celular)) {
             toast.current?.show({
                 severity: "error",
@@ -108,42 +127,28 @@ export default function FormularioPostulante() {
 
         const { nombres, apellidos } = separarNombresApellidos(nombre);
 
-        if (nombre.trim().split(" ").length < 2) {
-            toast.current?.show({
-                severity: "warn",
-                summary: "Nombre incompleto",
-                detail: "Ingrese al menos un nombre y un apellido.",
-                life: 3000
-            });
-            return;
-        }
-
-
         try {
-            // 1️⃣ Crear postulante
-            const resp = await crearPostulante({
-                nombres,              // 👈 corregido
-                apellidos,           // deberías pedirlo en el form
-                telefono: celular,            // 👈 corregido
+            const payload = {
+                nombres,
+                apellidos,
+                telefono: celular,
                 cedula,
                 correo,
-                direccion: "N/A",             // puedes poner dummy si aún no lo pides
+                direccion: "N/A",
                 carrerasId: carrerasFiltradas
                     .filter(c => carrerasSeleccionadas.includes(c.nombre))
-                    .map(c => c.id), // 👈 number[]
-                estado: "PENDIENTE",
-                fechaUltimoContacto: new Date().toISOString().split("T")[0],
+                    .map(c => c.id),
+                estado: "PENDIENTE" as const,
                 intentosContacto: 0,
-                fechaNacimiento: "2000-01-01", // agrega campo en el form si lo necesitas
-                periodoAcademicoId: 1          // idem
-            });
+                fechaNacimiento: "2000-01-01",
+                usuario_registro: "FrontendUser",
+                periodoAcademicoId: 1
+            };
 
-            console.log("Respuesta crearPostulante:", resp);
-
-            const nuevoPostulante = await resp.json(); // backend debe devolver { id: ... }
+            const resp = await crearPostulante(payload);
+            const nuevoPostulante = await resp.json();
             const postulanteId = nuevoPostulante.id;
 
-            // 2️⃣ Asignar carreras
             await asignarCarreras(
                 postulanteId,
                 carrerasFiltradas
@@ -151,21 +156,20 @@ export default function FormularioPostulante() {
                     .map(c => c.id)
             );
 
-            // 3️⃣ Notificación
             toast.current?.show({
                 severity: "success",
                 summary: "Postulante registrado",
-                detail: `Nombre: ${nombre} | Cédula: ${cedula}`,
+                detail: `${nombres} ${apellidos}`,
                 life: 4000,
             });
 
-            // Reset
             setNombre("");
             setCedula("");
             setCorreo("");
             setCelular("");
             setModalidadSeleccionada(null);
             setCarrerasSeleccionadas([]);
+
         } catch (err) {
             console.error(err);
             toast.current?.show({
@@ -175,36 +179,6 @@ export default function FormularioPostulante() {
                 life: 4000,
             });
         }
-    };
-
-
-
-
-    //Separacion de apellidos y nombres
-    const separarNombresApellidos = (nombreCompleto: string) => {
-        const partes = nombreCompleto.trim().split(" ");
-
-        let nombres = "";
-        let apellidos = "";
-
-        if (partes.length === 4) {
-            // formato esperado: [Nombre1, Nombre2, Apellido1, Apellido2]
-            nombres = `${partes[0]} ${partes[1]}`;
-            apellidos = `${partes[2]} ${partes[3]}`;
-        } else if (partes.length === 3) {
-            // [Nombre1, Nombre2, Apellido1] -> asumimos primer apellido solo
-            nombres = `${partes[0]} ${partes[1]}`;
-            apellidos = partes[2];
-        } else if (partes.length === 2) {
-            // [Nombre, Apellido]
-            nombres = partes[0];
-            apellidos = partes[1];
-        } else {
-            // cualquier otro caso, todo va a nombres
-            nombres = nombreCompleto;
-        }
-
-        return { nombres, apellidos };
     };
 
     return (
@@ -225,7 +199,7 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="correo">Correo Electrónico</label>
-                        <InputText id="correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} className="w-full" placeholder="Ej: correo@gmai.com" />
+                        <InputText id="correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} className="w-full" placeholder="Ej: correo@gmail.com" />
                     </div>
 
                     <div className="form-group">
