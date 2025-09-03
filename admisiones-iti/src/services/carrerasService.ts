@@ -1,12 +1,12 @@
 // services/carrerasService.ts
 import type { Carrera } from "../types/Carrera";
 
-// Usar siempre HTTPS en producción para evitar Mixed Content
+// URL base de la API
 const API_URL =
   import.meta.env.VITE_API_URL ||
   (import.meta.env.PROD
-    ? "https://postulantesiti-g8bpcscseyhvdhhe.northcentralus-01.azurewebsites.net/api/carreras"
-    : "http://localhost:8080/api/carreras");
+    ? "https://postulantesiti-g8bpcscseyhvdhhe.northcentralus-01.azurewebsites.net/api"
+    : "http://localhost:8080/api");
 
 async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
@@ -29,21 +29,21 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
  * Listar todas las carreras
  */
 export async function getCarreras(): Promise<Carrera[]> {
-  return fetchApi<Carrera[]>("", { method: "GET" });
+  return fetchApi<Carrera[]>("/carreras", { method: "GET" });
 }
 
 /**
  * Obtener carrera por ID
  */
 export async function getCarreraById(id: number): Promise<Carrera> {
-  return fetchApi<Carrera>(`/${id}`, { method: "GET" });
+  return fetchApi<Carrera>(`/carreras/${id}`, { method: "GET" });
 }
 
 /**
  * Crear nueva carrera
  */
 export async function crearCarrera(carrera: Carrera): Promise<Carrera> {
-  return fetchApi<Carrera>("", {
+  return fetchApi<Carrera>("/carreras", {
     method: "POST",
     body: JSON.stringify(carrera),
   });
@@ -53,7 +53,7 @@ export async function crearCarrera(carrera: Carrera): Promise<Carrera> {
  * Actualizar carrera existente
  */
 export async function actualizarCarrera(id: number, carrera: Carrera): Promise<Carrera> {
-  return fetchApi<Carrera>(`/${id}`, {
+  return fetchApi<Carrera>(`/carreras/${id}`, {
     method: "PUT",
     body: JSON.stringify(carrera),
   });
@@ -63,7 +63,7 @@ export async function actualizarCarrera(id: number, carrera: Carrera): Promise<C
  * Eliminar carrera por ID
  */
 export async function eliminarCarrera(id: number): Promise<void> {
-  await fetchApi<void>(`/${id}`, {
+  await fetchApi<void>(`/carreras/${id}`, {
     method: "DELETE",
   });
 }
@@ -72,7 +72,7 @@ export async function eliminarCarrera(id: number): Promise<void> {
  * Crear carrera con estructura completa
  */
 export async function crearCarreraConEstructura(carrera: Carrera): Promise<string> {
-  return fetchApi<string>("/estructura-completa", {
+  return fetchApi<string>("/carreras/estructura-completa", {
     method: "POST",
     body: JSON.stringify(carrera),
   });
