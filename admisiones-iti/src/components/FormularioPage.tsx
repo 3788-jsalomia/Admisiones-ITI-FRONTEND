@@ -142,7 +142,6 @@ export default function FormularioPostulante() {
             periodoAcademicoId: 1
         };
 
-        // 🔹 Siempre logueamos el payload antes del fetch
         console.log("Payload a enviar:", payload);
 
         try {
@@ -150,13 +149,14 @@ export default function FormularioPostulante() {
 
             console.log("Status:", resp.status);
 
+            // Siempre leer como texto, nunca asumir JSON
             let textResponse = "";
             try {
                 textResponse = await resp.text();
-            } catch (jsonErr) {
-                console.warn("No se pudo parsear la respuesta como texto/json:", jsonErr);
+            } catch (textErr) {
+                console.warn("No se pudo leer la respuesta como texto:", textErr);
             }
-            console.log("Text response:", textResponse);
+            console.log("Respuesta del backend:", textResponse);
 
             if (resp.ok) {
                 toast.current?.show({
@@ -166,6 +166,7 @@ export default function FormularioPostulante() {
                     life: 4000,
                 });
 
+                // Reset del formulario
                 setNombre("");
                 setCedula("");
                 setCorreo("");
@@ -173,7 +174,7 @@ export default function FormularioPostulante() {
                 setModalidadSeleccionada(null);
                 setCarrerasSeleccionadas([]);
             } else {
-                throw new Error("Error en la respuesta del servidor");
+                throw new Error(`Error en el servidor: ${resp.status} - ${textResponse}`);
             }
         } catch (err) {
             console.error("Error en crearPostulante:", err);
@@ -185,6 +186,7 @@ export default function FormularioPostulante() {
             });
         }
     };
+
 
 
     return (
