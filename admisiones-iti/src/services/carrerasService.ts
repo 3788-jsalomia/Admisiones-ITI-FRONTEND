@@ -1,7 +1,12 @@
 // services/carrerasService.ts
 import type { Carrera } from "../types/Carrera";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/carreras";
+// Usar siempre HTTPS en producción para evitar Mixed Content
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? "https://postulantesiti-g8bpcscseyhvdhhe.northcentralus-01.azurewebsites.net/api/carreras"
+    : "http://localhost:8080/api/carreras");
 
 async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
