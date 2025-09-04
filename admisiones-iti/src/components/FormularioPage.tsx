@@ -5,6 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Card } from "primereact/card";
 import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import { getCarreras } from "../services/carrerasService";
 import { crearPostulante } from "../services/postulanteService";
@@ -205,7 +206,18 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="cedula">Cédula</label>
-                        <InputText id="cedula" value={cedula} onChange={(e) => setCedula(e.target.value)} className="w-full" placeholder="Ej: 1799999999" />
+                        <InputText
+                            id="cedula"
+                            value={cedula}
+                            onChange={(e) => {
+                                const valor = e.target.value;
+                                if (/^\d*$/.test(valor)) { // ✅ solo números
+                                    setCedula(valor);
+                                }
+                            }}
+                            className="w-full"
+                            placeholder="Ej: 1799999999"
+                        />
                     </div>
 
                     <div className="form-group">
@@ -215,7 +227,18 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="telefono">Número de Celular</label>
-                        <InputText id="telefono" value={celular} onChange={(e) => setCelular(e.target.value)} className="w-full" placeholder="Ej: 0999999999" />
+                        <InputText
+                            id="telefono"
+                            value={celular}
+                            onChange={(e) => {
+                                const valor = e.target.value;
+                                if (/^\d*$/.test(valor)) { // ✅ solo números
+                                    setCelular(valor);
+                                }
+                            }}
+                            className="w-full"
+                            placeholder="Ej: 0999999999"
+                        />
                     </div>
 
                     <div className="form-group form-group-dropdown">
@@ -264,11 +287,24 @@ export default function FormularioPostulante() {
 
                     <div className="botones-form">
                         <Button
-                            type="submit"
+                            type="button"
                             label="Generar Postulante"
                             icon="pi pi-user-plus"
                             className="p-button-rounded p-button-success boton-principal"
+                            onClick={() =>
+                                confirmDialog({
+                                    message: "¿Estás seguro de generar el postulante?",
+                                    header: "Confirmación",
+                                    icon: "pi pi-exclamation-triangle",
+                                    acceptLabel: "Sí",
+                                    rejectLabel: "No",
+                                    accept: () => handleSubmit,
+                                    reject: () => { }
+                                })
+                            }
                         />
+
+
                         <Button
                             type="reset"
                             label="Limpiar"
