@@ -5,7 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Card } from "primereact/card";
 import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
 
 import { getCarreras } from "../services/carrerasService";
 import { crearPostulante } from "../services/postulanteService";
