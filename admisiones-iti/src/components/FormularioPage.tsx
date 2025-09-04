@@ -5,7 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Card } from "primereact/card";
 import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
-import { confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import { getCarreras } from "../services/carrerasService";
 import { crearPostulante } from "../services/postulanteService";
@@ -101,8 +101,8 @@ export default function FormularioPostulante() {
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (e?: React.FormEvent) => {
+        e?.preventDefault();
 
         const totalCarreras = Object.values(carrerasSeleccionadas).flat();
 
@@ -186,6 +186,7 @@ export default function FormularioPostulante() {
     return (
         <div className="formulario-container">
             <Toast ref={toast} />
+            <ConfirmDialog /> 
             <Card title="Formulario de Postulación" className="formulario-card shadow-4">
                 <form onSubmit={handleSubmit} className="formulario-grid">
                     <div className="form-group">
@@ -298,7 +299,7 @@ export default function FormularioPostulante() {
                                     icon: "pi pi-exclamation-triangle",
                                     acceptLabel: "Sí",
                                     rejectLabel: "No",
-                                    accept: () => handleSubmit,
+                                    accept: () => handleSubmit(),
                                     reject: () => { }
                                 })
                             }
