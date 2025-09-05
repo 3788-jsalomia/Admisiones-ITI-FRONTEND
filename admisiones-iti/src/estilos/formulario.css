@@ -5,6 +5,7 @@
   padding: 1rem;
   /*background: linear-gradient(135deg, #ffffff, #ffffff);*/
   background-image: url('../../public/back-carreras.jpg');
+  background-size: cover;
   min-height: 100vh;
 }
 
