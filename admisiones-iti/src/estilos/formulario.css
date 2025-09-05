@@ -3,7 +3,8 @@
   display: flex;
   justify-content: center;
   padding: 1rem;
-  background: linear-gradient(135deg, #ffffff, #ffffff);
+  /*background: linear-gradient(135deg, #ffffff, #ffffff);*/
+  background-image: url('../../public/back-carreras.jpg');
   min-height: 100vh;
 }
 
@@ -12,7 +13,8 @@
   max-width: 650px;
   border-radius: 1rem;
   padding: 1.5rem;
-  background-color: #fdfdfd;
+  background: linear-gradient(135deg, #ffffff, #ffffff);
+  /*background-image: url('../../public/back-carreras.jpg');*/
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
   border: 1px solid #e2e8f0;
 }
