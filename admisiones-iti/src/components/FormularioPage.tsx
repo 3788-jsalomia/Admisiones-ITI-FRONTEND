@@ -5,6 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Card } from "primereact/card";
 import { Checkbox } from "primereact/checkbox";
 import { Toast } from "primereact/toast";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import { getCarreras } from "../services/carrerasService";
@@ -21,6 +22,7 @@ export default function FormularioPostulante() {
     const [carreras, setCarreras] = useState<Carrera[]>([]);
     const [carrerasFiltradas, setCarrerasFiltradas] = useState<Carrera[]>([]);
     const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState<{ [modalidadId: string]: number[] }>({});
+    const [loading, setLoading] = useState(false);
 
     const toast = useRef<Toast>(null);
 
@@ -44,8 +46,7 @@ export default function FormularioPostulante() {
         if (!modalidadSeleccionada) {
             setCarrerasFiltradas([]);
         } else {
-            const filtradas = carreras.filter(c => c.modalidad === modalidadSeleccionada);
-            setCarrerasFiltradas(filtradas);
+            setCarrerasFiltradas(carreras.filter(c => c.modalidad === modalidadSeleccionada));
         }
     }, [modalidadSeleccionada, carreras]);
 
@@ -54,6 +55,7 @@ export default function FormularioPostulante() {
         const digitos = cedula.split("").map(Number);
         const provincia = parseInt(cedula.substring(0, 2), 10);
         if (provincia < 1 || provincia > 24) return false;
+
         let total = 0;
         for (let i = 0; i < 9; i++) {
             let valor = digitos[i];
@@ -67,10 +69,7 @@ export default function FormularioPostulante() {
         return digitoVerificador === digitos[9];
     };
 
-    const validarTelefono = (telefono: string): boolean => {
-        const regex = /^09\d{8}$/;
-        return regex.test(telefono);
-    };
+    const validarTelefono = (telefono: string): boolean => /^09\d{8}$/.test(telefono);
 
     const separarNombresApellidos = (nombreCompleto: string) => {
         const partes = nombreCompleto.trim().split(" ");
@@ -150,10 +149,8 @@ export default function FormularioPostulante() {
             intentosContacto: 0,
             fechaNacimiento: "2000-01-01",
             usuario_registro: "FrontendUser",
-            periodoAcademicoId: 1
+            periodoAcademicoId: 1,
         };
-
-        console.log("Payload a enviar:", payload);
 
         try {
             const resp = await crearPostulante(payload);
@@ -166,6 +163,7 @@ export default function FormularioPostulante() {
                 life: 4000,
             });
 
+            // limpiar
             setNombre("");
             setCedula("");
             setCorreo("");
@@ -186,9 +184,18 @@ export default function FormularioPostulante() {
     return (
         <div className="formulario-container">
             <Toast ref={toast} />
-            <ConfirmDialog /> 
+            <ConfirmDialog />
+
+            {loading && (
+                <div className="loading-overlay">
+                    <ProgressSpinner />
+                    <p>Enviando información...</p>
+                </div>
+            )}
+
             <Card title="Formulario de Postulación" className="formulario-card shadow-4">
                 <form onSubmit={handleSubmit} className="formulario-grid">
+                    {/* ========================= CAMPOS ========================= */}
                     <div className="form-group">
                         <label htmlFor="nombre">Nombres Completos</label>
                         <InputText
@@ -196,9 +203,7 @@ export default function FormularioPostulante() {
                             value={nombre}
                             onChange={(e) => {
                                 const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
-                                if (regex.test(e.target.value)) {
-                                    setNombre(e.target.value);
-                                }
+                                if (regex.test(e.target.value)) setNombre(e.target.value);
                             }}
                             className="w-full"
                             placeholder="Dos nombres / Dos apellidos"
@@ -212,9 +217,7 @@ export default function FormularioPostulante() {
                             value={cedula}
                             onChange={(e) => {
                                 const valor = e.target.value;
-                                if (/^\d*$/.test(valor)) { // ✅ solo números
-                                    setCedula(valor);
-                                }
+                                if (/^\d*$/.test(valor)) setCedula(valor);
                             }}
                             className="w-full"
                             placeholder="Ej: 1799999999"
@@ -223,7 +226,14 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="correo">Correo Electrónico</label>
-                        <InputText id="correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} className="w-full" placeholder="Ej: correo@gmail.com" />
+                        <InputText
+                            id="correo"
+                            type="email"
+                            value={correo}
+                            onChange={(e) => setCorreo(e.target.value)}
+                            className="w-full"
+                            placeholder="Ej: correo@gmail.com"
+                        />
                     </div>
 
                     <div className="form-group">
@@ -233,9 +243,7 @@ export default function FormularioPostulante() {
                             value={celular}
                             onChange={(e) => {
                                 const valor = e.target.value;
-                                if (/^\d*$/.test(valor)) { // ✅ solo números
-                                    setCelular(valor);
-                                }
+                                if (/^\d*$/.test(valor)) setCelular(valor);
                             }}
                             className="w-full"
                             placeholder="Ej: 0999999999"
@@ -266,13 +274,16 @@ export default function FormularioPostulante() {
                                             checked={(carrerasSeleccionadas[modalidadSeleccionada] || []).includes(carrera.id)}
                                             onChange={() => toggleCarrera(modalidadSeleccionada, carrera.id)}
                                         />
-                                        <label htmlFor={`carrera-${carrera.id}`} className="checkbox-label">{carrera.nombre}</label>
+                                        <label htmlFor={`carrera-${carrera.id}`} className="checkbox-label">
+                                            {carrera.nombre}
+                                        </label>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
 
+                    {/* ========================= SELECCIÓN ========================= */}
                     <div>
                         <h4>Carreras seleccionadas:</h4>
                         {Object.entries(carrerasSeleccionadas).map(([modalidad, ids]) => (
@@ -286,12 +297,14 @@ export default function FormularioPostulante() {
                         ))}
                     </div>
 
+                    {/* ========================= BOTONES ========================= */}
                     <div className="botones-form">
                         <Button
                             type="button"
-                            label="Generar Postulante"
-                            icon="pi pi-user-plus"
+                            label={loading ? "Enviando..." : "Generar Postulante"}
+                            icon={loading ? "pi pi-spin pi-spinner" : "pi pi-user-plus"}
                             className="p-button-rounded p-button-success boton-principal"
+                            disabled={loading}
                             onClick={() =>
                                 confirmDialog({
                                     message: "¿Estás seguro de generar el postulante?",
@@ -299,12 +312,14 @@ export default function FormularioPostulante() {
                                     icon: "pi pi-exclamation-triangle",
                                     acceptLabel: "Sí",
                                     rejectLabel: "No",
-                                    accept: () => handleSubmit(),
-                                    reject: () => { }
+                                    accept: async () => {
+                                        setLoading(true);
+                                        await handleSubmit();
+                                        setLoading(false);
+                                    },
                                 })
                             }
                         />
-
 
                         <Button
                             type="reset"
