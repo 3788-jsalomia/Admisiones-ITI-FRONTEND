@@ -141,3 +141,27 @@
   color: #333;
   font-weight: 500;
 }
+
+.telefono-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.codigo-pais {
+  flex: 0 0 120px;   /* ancho fijo (no crece ni se encoge) */
+  padding: 0.45rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.95rem;
+}
+
+.input-telefono {
+  flex: 1;   /* ocupa todo el espacio sobrante */
+  padding: 0.45rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}

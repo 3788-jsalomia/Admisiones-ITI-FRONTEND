@@ -23,6 +23,8 @@ export default function FormularioPostulante() {
     const [carrerasFiltradas, setCarrerasFiltradas] = useState<Carrera[]>([]);
     const [carrerasSeleccionadas, setCarrerasSeleccionadas] = useState<{ [modalidadId: string]: number[] }>({});
     const [loading, setLoading] = useState(false);
+    const [codigoPais, setCodigoPais] = useState("+593"); // Ecuador por defecto
+
 
     const toast = useRef<Toast>(null);
 
@@ -140,7 +142,7 @@ export default function FormularioPostulante() {
         const payload = {
             nombres,
             apellidos,
-            telefono: celular,
+            telefono: `${codigoPais}${celular}`,
             cedula,
             correo,
             direccion: "N/A",
@@ -238,17 +240,36 @@ export default function FormularioPostulante() {
 
                     <div className="form-group">
                         <label htmlFor="telefono">Número de Celular</label>
-                        <InputText
-                            id="telefono"
-                            value={celular}
-                            onChange={(e) => {
-                                const valor = e.target.value;
-                                if (/^\d*$/.test(valor)) setCelular(valor);
-                            }}
-                            className="w-full"
-                            placeholder="Ej: 0999999999"
-                        />
+                        <div className="telefono-container">
+                            {/* Código del país */}
+                            <select
+                                className="codigo-pais"
+                                value={codigoPais}
+                                onChange={(e) => setCodigoPais(e.target.value)}
+                            >
+                                <option value="+593">+593 (EC)</option>
+                                <option value="+57">+57 (CO)</option>
+                                <option value="+52">+52 (MX)</option>
+                                <option value="+1">+1 (US)</option>
+                                <option value="+34">+34 (ES)</option>
+                                <option value="+51">+51 (PE)</option>
+                            </select>
+
+                            {/* Input del número */}
+                            <InputText
+                                id="telefono"
+                                value={celular}
+                                onChange={(e) => {
+                                    const valor = e.target.value;
+                                    if (/^\d*$/.test(valor)) setCelular(valor); // Solo números
+                                }}
+                                className="input-telefono"
+                                placeholder="999999999"
+                            />
+                        </div>
                     </div>
+
+
 
                     <div className="form-group form-group-dropdown">
                         <label htmlFor="modalidad">Modalidad</label>
