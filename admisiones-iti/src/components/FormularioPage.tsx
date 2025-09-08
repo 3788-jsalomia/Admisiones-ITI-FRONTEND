@@ -71,7 +71,7 @@ export default function FormularioPostulante() {
         return digitoVerificador === digitos[9];
     };
 
-    const validarTelefono = (telefono: string): boolean => /^09\d{8}$/.test(telefono);
+    const validarTelefono = (telefono: string): boolean => /^9\d{8}$/.test(telefono);
 
     const separarNombresApellidos = (nombreCompleto: string) => {
         const partes = nombreCompleto.trim().split(" ");
