@@ -23,7 +23,7 @@ export const crearPostulante = async (postulante: PostulanteDto) => {
   try {
     return await response.json();
   } catch {
-    return {}; 
+    return {};
   }
 };
 

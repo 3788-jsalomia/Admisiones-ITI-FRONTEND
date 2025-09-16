@@ -102,11 +102,10 @@ export default function FormularioPostulante() {
         });
     };
 
-    const handleSubmit = async (e?: React.FormEvent) => {
+    const handleSubmit = (e?: React.FormEvent) => {
         e?.preventDefault();
 
         const totalCarreras = Object.values(carrerasSeleccionadas).flat();
-
         if (!nombre || !cedula || !correo || !celular || totalCarreras.length === 0) {
             toast.current?.show({
                 severity: "warn",
@@ -154,33 +153,34 @@ export default function FormularioPostulante() {
             periodoAcademicoId: 1,
         };
 
-        try {
-            const resp = await crearPostulante(payload);
-            console.log("Respuesta del backend:", resp);
-
-            toast.current?.show({
-                severity: "success",
-                summary: "Postulante registrado",
-                detail: `${nombres} ${apellidos}`,
-                life: 4000,
+        // 🚀 Enviar en segundo plano (sin await)
+        crearPostulante(payload)
+            .then((resp) => {
+                console.log("Respuesta del backend:", resp);
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Postulante registrado",
+                    detail: `${nombres} ${apellidos}`,
+                    life: 4000,
+                });
+            })
+            .catch((err) => {
+                console.error("Error en crearPostulante:", err);
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "No se pudo registrar el postulante.",
+                    life: 4000,
+                });
             });
 
-            // limpiar
-            setNombre("");
-            setCedula("");
-            setCorreo("");
-            setCelular("");
-            setModalidadSeleccionada(null);
-            setCarrerasSeleccionadas({});
-        } catch (err) {
-            console.error("Error en crearPostulante:", err);
-            toast.current?.show({
-                severity: "error",
-                summary: "Error",
-                detail: "No se pudo registrar el postulante.",
-                life: 4000,
-            });
-        }
+        // 🚀 Reset inmediato (el usuario ya puede seguir usando el form)
+        setNombre("");
+        setCedula("");
+        setCorreo("");
+        setCelular("");
+        setModalidadSeleccionada(null);
+        setCarrerasSeleccionadas({});
     };
 
     return (
@@ -199,7 +199,7 @@ export default function FormularioPostulante() {
                 <form onSubmit={handleSubmit} className="formulario-grid">
                     {/* ========================= CAMPOS ========================= */}
                     <div className="form-group">
-                        <label htmlFor="nombre">Nombres Completos</label>
+                        <label htmlFor="nombre">Nombres y Apellidos Completos</label>
                         <InputText
                             id="nombre"
                             value={nombre}
@@ -213,7 +213,7 @@ export default function FormularioPostulante() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="cedula">Cédula</label>
+                        <label htmlFor="cedula">Cédula de identidad</label>
                         <InputText
                             id="cedula"
                             value={cedula}
